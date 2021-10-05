@@ -1,12 +1,25 @@
 from random import *
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_blobs
 import numpy as np
 
 
-k = 2
 
-P = [ (random()*100, random()*100) for m in range(5) ]
+
+centers = [(10, 80), (20, 20),(80, 20), (80, 60)]
+cluster_std = [8, 10,5,7]
+
+k = len(centers)
+P, y = make_blobs(n_samples=100, cluster_std=cluster_std, centers=centers, n_features=k, random_state=42)
+colors=["red", "blue", "green", "purple"]
+
+
+
+#P = [ (random()*100, random()*100) for m in range(10) ]
 print(f"liste des points")
-print(np.array(P))
+P=P.tolist() # pour ne pas avoir de pb avec le array
+#print(type(P))
+#print(P)
 
 
 def distance(p1,p2):
@@ -18,13 +31,14 @@ def getCentres(P,dj):
     Renvoie des centres possibles à partir d'une distance
     """
     C=[]
-    while(len(P)>0 ): # attention à itérer sur la liste en même temps qu'on la modifie
-        indice=randint(0,len(P)-1 )
-        p = P[indice]
-        R = [ q for q in P if distance(p,q) <= dj  ]
+    Pcopy = P[:]
+    while(len(Pcopy)>0 ): # attention à itérer sur la liste en même temps qu'on la modifie
+        indice=randint(0,len(Pcopy)-1 )
+        p = Pcopy[indice]
+        R = [ q for q in Pcopy if distance(p,q) <= dj  ]
         C.append(p)
         for q in R:
-            P.remove(q)
+            Pcopy.remove(q)
     return C
 
 #print(getCentres(P,30))
@@ -43,4 +57,50 @@ def getDistances(P):
     return sorted(distances)
 
 # print(getDistances(P))
+
+def kCentresApprox(P,k):
+    D = getDistances(P)
+    for i in range(0,len(D)-1):
+        C = getCentres(P, 2*D[i])
+        if(len(C) <=k ): 
+            return (C, 2*D[i])
+    
+
+print("result")
+result = kCentresApprox(P,4)
+deux_di = result[1]
+centres = result[0] 
+
+
+print("AFFICHAGE")
+
+#Xs = [P[k][0] for k in range(len(P))]
+#print(P)
+#Ys = [P[k][1] for k in range(len(P))]
+
+fig, ax = plt.subplots()
+
+for centre_aff in range(k):
+    plt.scatter(np.array(P)[y == centre_aff, 0], np.array(P)[y == centre_aff, 1], color=colors[centre_aff], s=10 )
+
+#Centres
+for centre in range(len(centres)):
+    circle = plt.Circle(( centres[centre][0] , centres[centre][1] ), deux_di, color="r", fill=False ) 
+    ax.add_artist(circle)
+
+
+
+ax.axis("equal")
+plt.xlim(0,100)
+plt.ylim(0,100)
+
+plt.title('K-centres implementation', fontsize=8)
+
+plt.show()
+
+
+
+
+plt.show()
+
 
