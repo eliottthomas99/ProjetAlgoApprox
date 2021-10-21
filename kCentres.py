@@ -1,5 +1,6 @@
 from random import *
 import matplotlib.pyplot as plt
+from numpy.random.mtrand import poisson
 from sklearn.datasets import make_blobs
 import numpy as np
 import itertools
@@ -72,33 +73,46 @@ def kCentresBrutForce(P,k):
     #iterer sur tous les k-uplets de centres possibles
 
     k_uplets = list(itertools.combinations(P, k))
-    best_k_uplet = []
-    best_dist = float('inf')
     
-    dist_sol=dict()
+
+    best_dist = float('inf')
+    dict_sol=dict()
 
     for brut_centres in k_uplets: #brut_centres representent une combinaison de centres de taille k. 
-        dist_max_centre = float('inf')
+        #dist_max_centre = float('inf')
+
+        dict_sol_temporaire=dict() #pour stocker l'association points centres temporaire
+
         for point in P: #on itere sur tous les points
             dist_point_min = float('inf')
+            
             for b_centre in brut_centres: #on itere sur tous les centres de la combinaison en cours
                 dist = distance(point,b_centre)
                 if(dist<dist_point_min ):
                     dist_point_min = dist
-            if(dist_point_min)
+                    p_centre = b_centre 
 
+            dict_sol_temporaire[tuple(point)] = (p_centre,dist_point_min) #on assigne le meilleur centre pour chaque point
+        
+        distances = [d[1] for d in dict_sol_temporaire.values() ]
 
+        dist_point_max=0
+        for point_max_temp in dict_sol_temporaire.keys():
+            #print("dicttemp",dict_sol_temporaire[point_max_temp][1])
+            #print(dist_point_max)
 
-    
-    
-    return k_uplets
+            if(dict_sol_temporaire[point_max_temp][1] > dist_point_max ):
+                dist_point_max = dict_sol_temporaire[point_max_temp][1]
+                point_max = point_max_temp
+        
+        if(dist_point_max<best_dist):
+            best_dist = dist_point_max
+            dict_sol = dict_sol_temporaire
+            best_sol = brut_centres
+            point_far = point_max
 
+    return (best_sol,best_dist,point_far,dict_sol)
 
-    #assigner chaque point au centre le plus proche
-
-    #si la distance max à un centre est plus petite que la best pour le moment, on garde ça
-
-    #retourner les centres et la distance 
 
 
 
@@ -111,7 +125,13 @@ result = kCentresApprox(P,k)
 deux_di = result[1]
 centres = result[0] 
 
-print(len(kCentresBrutForce(P,k)))
+resultBrut = kCentresBrutForce(P,k)
+centres_brut = resultBrut[0]
+distance_brut = resultBrut[1]
+point_far_brut = resultBrut[2]
+dict_brut = resultBrut[3]
+print("CENTRES")
+print(centres_brut)
 
 print("AFFICHAGE")
 
@@ -130,6 +150,9 @@ for centre in range(len(centres)):
     ax.add_artist(circle)
 
 
+Xs=[point_far_brut[0],(dict_brut[point_far_brut])[0][0]]
+Ys=[point_far_brut[1],(dict_brut[point_far_brut])[0][1]]
+plt.plot(Xs,Ys)
 
 ax.axis("equal")
 plt.xlim(0,100)
