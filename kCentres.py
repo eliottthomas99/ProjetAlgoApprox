@@ -2,7 +2,7 @@ from random import *
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_blobs
 import numpy as np
-
+import itertools
 
 
 
@@ -10,7 +10,7 @@ centers = [(10, 80), (20, 20),(80, 20), (80, 60)]
 cluster_std = [8, 10,5,7]
 
 k = len(centers)
-P, y = make_blobs(n_samples=100, cluster_std=cluster_std, centers=centers, n_features=k, random_state=42)
+P, y = make_blobs(n_samples=10, cluster_std=cluster_std, centers=centers, n_features=k, random_state=42)
 colors=["red", "blue", "green", "purple"]
 
 
@@ -66,11 +66,52 @@ def kCentresApprox(P,k):
             return (C, 2*D[i])
     
 
+
+def kCentresBrutForce(P,k):
+
+    #iterer sur tous les k-uplets de centres possibles
+
+    k_uplets = list(itertools.combinations(P, k))
+    best_k_uplet = []
+    best_dist = float('inf')
+    
+    dist_sol=dict()
+
+    for brut_centres in k_uplets: #brut_centres representent une combinaison de centres de taille k. 
+        dist_max_centre = float('inf')
+        for point in P: #on itere sur tous les points
+            dist_point_min = float('inf')
+            for b_centre in brut_centres: #on itere sur tous les centres de la combinaison en cours
+                dist = distance(point,b_centre)
+                if(dist<dist_point_min ):
+                    dist_point_min = dist
+            if(dist_point_min)
+
+
+
+    
+    
+    return k_uplets
+
+
+    #assigner chaque point au centre le plus proche
+
+    #si la distance max à un centre est plus petite que la best pour le moment, on garde ça
+
+    #retourner les centres et la distance 
+
+
+
+
+
+
+
 print("result")
-result = kCentresApprox(P,4)
+result = kCentresApprox(P,k)
 deux_di = result[1]
 centres = result[0] 
 
+print(len(kCentresBrutForce(P,k)))
 
 print("AFFICHAGE")
 
