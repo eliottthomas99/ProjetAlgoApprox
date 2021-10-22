@@ -12,12 +12,12 @@ centers = [(10, 80), (20, 20),(80, 20), (80, 60)]
 cluster_std = [8, 10,5,7]
 
 k = 4
-P, y = make_blobs(n_samples=4, cluster_std=cluster_std, centers=centers, n_features=k) #  random_state=42
+P, y = make_blobs(n_samples=10, cluster_std=cluster_std, centers=centers, n_features=k) #  random_state=42
 colors=["red", "blue", "green", "purple"]
 
 
 
-print(f"liste des points")
+#print(f"liste des points")
 P=P.tolist() # pour ne pas avoir de pb avec le array
 
 
@@ -86,6 +86,10 @@ def kCentresApprox(P,k):
             return (C, 2*D[i])
 
 def getMaxDist(P,C):
+    """
+    Renvoie toutes les informations necessaires sur la distance maximum à un centre
+    """
+
     dict_sol_temporaire=dict() #pour stocker l'association points centres 
     for point in P: #on itere sur tous les points
         dist_point_min = float('inf')
@@ -148,17 +152,72 @@ def kCentresBrutForce(P,k):
 
 
 
+
+def adjacences(Adj,x,we):
+    res  = []
+    for v in range(len(Adj[x])): # v représente les points adjacents à x
+        
+        if(Adj[x][v] <= we ):
+            res.append(v)
+    return res
+
+
+
+def kCenterBestHeuristic(P,k):
+    if(k==len(P)):
+        return P
     
+    Adj = adjMatrix(P)
+    se = sortedEdges(P,Adj)
+    m = len(se)
+    low = 1
+    high = m
+    while(high != low+1):
+        mid  = (low+high)//2
+        wmid = se[mid][0]
+        S = []
+        T = [indice for indice in range(len(P)) ] # on stoque dans T les indices des points de P
+        while(len(T) > 0):
+            rdIndice = randint(0,len(T)-1)
+            x  = T[rdIndice] # x représente un point disponible, stoqué sous forme d'indice
+            S.append(x)
+            adjx = adjacences(Adj,x,wmid)
+            for v in adjx:
+                adjv = adjacences(Adj,v,wmid)
+                #print("GOOOO")
+                for voisinV in adjv:
+                    #print("T")
+                    #print(T)
+                    #print(f"Voisinv : {voisinV}")
+                    if(voisinV in T):
+                        T.remove(voisinV)
+        if(len(S)<=k):
+            high=mid
+            Sfin = S
+        else:
+            low=mid
+    return Sfin       
+
+
+solHeu = kCenterBestHeuristic(P,k)
+print("centersHEU")
+centers_heu =[]
+for i in solHeu:
+    print(P[i])
+    centers_heu.append(P[i])
+
+print("HEURISTIC")
+maxDistHEU = getMaxDist(P,centers_heu)
+pointAPPHEU = maxDistHEU[0]
+dicoAPPHEU = maxDistHEU[2]
+print(f"APPHEU : {maxDistHEU[1]}")
 
 
 
 
 
 
-
-
-
-
+"""
 ratios = []
 for _ in range(1000):
     
@@ -222,10 +281,15 @@ for centre in range(len(centres)):
     ax.add_artist(circle)
 
 
+#APPHEU
+XsAPPHEU=[pointAPPHEU[0],(dicoAPPHEU[pointAPPHEU])[0][0]]
+YsAPPHEU=[pointAPPHEU[1],(dicoAPPHEU[pointAPPHEU])[0][1]]
+plt.plot(XsAPPHEU,YsAPPHEU,"g--")
+
 #APP
 XsAPP=[pointAPP[0],(dicoAPP[pointAPP])[0][0]]
 YsAPP=[pointAPP[1],(dicoAPP[pointAPP])[0][1]]
-plt.plot(XsAPP,YsAPP,"r")
+plt.plot(XsAPP,YsAPP,"r.")
 
 #OPT
 Xs=[point_far_brut[0],(dict_brut[point_far_brut])[0][0]]
@@ -247,5 +311,5 @@ plt.show()
 
 
 plt.show()
-"""
+
 
