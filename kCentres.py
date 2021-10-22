@@ -199,6 +199,58 @@ def kCenterBestHeuristic(P,k):
     return Sfin       
 
 
+
+
+
+
+
+
+
+ratiosAPP = []
+ratiosAPPHEU = []
+
+for _ in range(10000):
+    
+    centers = [(randint(1,100), randint(1,100)) for _ in range(k)]
+    cluster_std = [randint(1,20) for _ in range(k)]
+
+    P, y = make_blobs(n_samples=10, cluster_std=cluster_std, centers=centers, n_features=k) #  random_state=42
+    P=P.tolist()
+
+    resultHEU = kCenterBestHeuristic(P,k)
+    centers_heu =[]
+    for i in resultHEU:
+        centers_heu.append(P[i])
+
+    maxDistHEU = getMaxDist(P,centers_heu)
+    distAPPHEU  =maxDistHEU[1]
+
+
+
+    result = kCentresApprox(P,k)
+    centres = result[0] 
+    maxDist = getMaxDist(P,centres)
+    distAPP = maxDist[1]
+
+    resultBrut = kCentresBrutForce(P,k)
+    distOPT = resultBrut[1]
+
+    ratiosAPP.append(distAPP/distOPT)
+    ratiosAPPHEU.append(distAPPHEU/distOPT)
+
+
+print(f"max ratioAPP {max(ratiosAPP)}")
+print(f"avg ratioAPP {mean(ratiosAPP)}")
+
+print(f"max ratioAPPHEU {max(ratiosAPPHEU)}")
+print(f"avg ratioAPPHEU {mean(ratiosAPPHEU)}")
+
+
+
+
+"""
+
+
 solHeu = kCenterBestHeuristic(P,k)
 print("centersHEU")
 centers_heu =[]
@@ -213,35 +265,6 @@ dicoAPPHEU = maxDistHEU[2]
 print(f"APPHEU : {maxDistHEU[1]}")
 
 
-
-
-
-
-"""
-ratios = []
-for _ in range(1000):
-    
-    centers = [(randint(1,100), randint(1,100)) for _ in range(k)]
-    cluster_std = [randint(1,20) for _ in range(k)]
-
-    P, y = make_blobs(n_samples=10, cluster_std=cluster_std, centers=centers, n_features=k) #  random_state=42
-    P=P.tolist()
-
-    result = kCentresApprox(P,k)
-    centres = result[0] 
-    maxDist = getMaxDist(P,centres)
-    distAPP = maxDist[1]
-
-    resultBrut = kCentresBrutForce(P,k)
-    distOPT = resultBrut[1]
-
-    ratios.append(distAPP/distOPT)
-
-print(f"max ratio {max(ratios)}")
-print(f"avg ratio {mean(ratios)}")
-
-
-"""
 
 print("APPROX")
 result = kCentresApprox(P,k)
@@ -289,7 +312,7 @@ plt.plot(XsAPPHEU,YsAPPHEU,"g--")
 #APP
 XsAPP=[pointAPP[0],(dicoAPP[pointAPP])[0][0]]
 YsAPP=[pointAPP[1],(dicoAPP[pointAPP])[0][1]]
-plt.plot(XsAPP,YsAPP,"r.")
+plt.plot(XsAPP,YsAPP,"r:")
 
 #OPT
 Xs=[point_far_brut[0],(dict_brut[point_far_brut])[0][0]]
@@ -312,4 +335,4 @@ plt.show()
 
 plt.show()
 
-
+"""
