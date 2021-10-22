@@ -12,7 +12,7 @@ centers = [(10, 80), (20, 20),(80, 20), (80, 60)]
 cluster_std = [8, 10,5,7]
 
 k = 4
-P, y = make_blobs(n_samples=10, cluster_std=cluster_std, centers=centers, n_features=k) #  random_state=42
+P, y = make_blobs(n_samples=4, cluster_std=cluster_std, centers=centers, n_features=k) #  random_state=42
 colors=["red", "blue", "green", "purple"]
 
 
@@ -41,7 +41,28 @@ def getCentres(P,dj):
             Pcopy.remove(q)
     return C
 
-#print(getCentres(P,30))
+
+def adjMatrix(P):
+    M=[]
+    for i in range(len(P)):
+        M.append([])
+        for j in range(len(P)):
+            M[-1].append(distance(P[i],P[j]))
+    return M
+
+
+def sortedEdges(P,M):
+    E = []
+    for i in range(len(P)):
+        for j in range(i):
+            E.append( (M[i][j], (i,j) ))
+    
+    sortedE  = sorted(E, key = lambda dist: dist[0])
+    return sortedE
+
+
+
+
 
 
 def getDistances(P):
@@ -124,6 +145,15 @@ def kCentresBrutForce(P,k):
             point_far = point_max
 
     return (best_sol,best_dist,point_far,dict_sol)
+
+
+
+    
+
+
+
+
+
 
 
 
