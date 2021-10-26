@@ -6,5 +6,5 @@
 
 
 * 3. Comprendre l'algo alternatif et en faire une explication breve mais précise. 
-* 4. Mettre en place l'algo alternatif. 
+* 4. Mettre en place l'algo alternatif. -> done
 * 5. Comparer le nouvel algo à l'autre en pratique et à la théorie.  
