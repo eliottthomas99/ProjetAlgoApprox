@@ -1,0 +1,186 @@
+
+\begin{document}
+
+
+
+\section{Introduction}
+
+Dans ce rapport, nous allons présenter 2 solutions au problème des k-centres. 
+
+Le problème des k-centres est le suivant : On possède un nuage de p points (formalisé par un graphe), chaque point étant en n dimensions dans la version la plus générale du problème. Le but est de trouver k centres parmi les p points tel qu'ils soient les "\textit{mieux}" séparés possible. Il existe plusieurs moyen de juger la séparation des "\textit{clusters}" ainsi formés. 
+\vspace{1cm}
+
+\textbf{Hypothèses de travail : } 
+\vspace{.5cm}
+
+\textbf{1)} Le critère utilisé pour évaluer la séparation des clusters sera la distance maximale d'un point au centre le plus proche. 
+
+Formellement cela donne : $max_{v \in V} min_{c \in C} dist(v,c)  $ Avec : 
+
+\begin{itemize}
+    \item V : l'ensemble des sommets du graphe
+    \item C : l'ensemble des centres retenu par l'algorithme
+    \item dist : une fonction d'évaluation de distance entre 2 sommets du graphe. 
+\end{itemize}
+
+\vspace{.5cm}
+\textbf{2)} Il a également été choisi que chaque point auraient uniquement 2 dimensions plutôt que n. Ceci se fera sans perte de généralité mais permettra de nécessiter moins de puissance de calcul. Par ailleurs, il est ainsi possible de visualiser la séparation des clusters en 2 dimensions, contrairement au même problème pour n > 3. 
+
+
+\vspace{1cm}
+Finalement, la suite du rapport sera construite de la manière suivante : 2 algorithmes d'approximations seront présentés et comparés. Ils seront jugés sur leur ratio d'approximation, dans le pire des cas et en moyenne. 
+
+
+
+\newpage
+\section{2-approximation vue en cours}
+
+\subsection{Principe de l'algorithme}
+Il s'agit de la 2-approximation vue en cours.
+
+Le principe est le suivant : 
+
+\begin{itemize}
+    \item[1.] On commence par calculer les distance entre tous les points et les ordonner en ordre croissant
+    \item[2.] Puis on itère sur ces distances pour trouver les c=|C| centres des c clusters. 
+    \item[3.] Puisqu'on souhaite k centres, on ne retourne la solution que si c <=k. Si on souhaite exactement k centres il suffit de compléter arbitrairement jusqu'à k centres et on ne perd pas de généralité. 
+    \item[4.] Pour trouver les centres pour une distance donnée, on annoter tous les points comme centre ou voisin d'un centre. On place un centre puis son voisinage, puis un autre centre. On continue comme cela jusqu'à ce qu'on ai annoté tous les points.  
+\end{itemize}
+
+On trouve ci-dessous le pseudo code formalisant les 2 fonctions principales nécessaires au bon fonctionnement de l'algorithme. 
+
+\vspace{.5cm}
+
+\begin{lstlisting}
+getCentres(P, dj)
+    C = {}
+    TANT QUE |P|>0:
+        Soit p dans P
+        Soit R = { q dans P : D(p,q) <=dj}
+        C.insert(p)
+        P = P \ R
+    FIN TANT QUE
+    return C
+\end{lstlisting}
+
+
+\begin{lstlisting}
+kCentreAprox(P,k):
+    Calculer d1, ...., dm
+    POUR i de 1 a m :
+        C = getCentres(P, 2 di)
+        Si |C| <= k
+            return C
+    FIN POUR
+\end{lstlisting}
+
+\newpage
+\subsection{Implémentation de l'approximation}
+
+Vous pourrez retrouver l'intégralité du code commenté en annexe. Les parties jugées pertinentes à détailler le seront ici. 
+
+\begin{figure}[H]
+        \noindent
+        \makebox[\textwidth]{\includegraphics[scale=0.25]{images/miseEnPlaceDesPoints.png}}
+		\caption{Structure du code pour la mise en place des points}
+\end{figure}
+
+Cette structure de code est reprise dans les 2 implémentations. Elle permet de créer artificiellement un certain nombre de clusters, ici 4. Il a été décider d'imposer un nombre limité de points car la vérification de l'optimal se fait grâce à un algorithme de force brute qui teste toutes les solutions et la meilleure en ressort. C'est en particulier nécessaires lors des tests sur de nombreuses instances. 
+
+
+
+\subsection{Analyse de l'approximation } 
+
+Dans cette sous-section, nous allons analyser les performances de cette approximation en moyenne et dans le pire des cas. 
+
+\begin{figure}[H]
+        \noindent
+        \makebox[\textwidth]{\includegraphics[scale=0.75]{images/histAPP.png}}
+		\caption{Répartition des score d'approximation pour la 2-approximation vue en cours sur 1000 instances}
+\end{figure}
+
+
+Grâce à l'histogramme présenté en figure 2, on peut voir que dans plus de 70\% des cas, l'algorithme retourne au maximum 1.25 fois la solution optimale.  
+
+Dans le diagramme en bâton présenté en figure 3, on observe même que en moyenne, le ratio du premier algorithme est 1.18 fois pire que l'optimal. De plus, la courbe rouge permet de confirmer en pratique que l'on a bien une 2-approximation. On a bien max\_APP qui tend vers 2.
+
+
+
+
+
+
+
+\begin{figure}[H]
+        \noindent
+        \makebox[\textwidth]{\includegraphics[scale=0.75]{images/APP_stats.png}}
+		\caption{Comparaison entre la solution optimale, le ratio en moyenne et le ratio dans le pire des cas sur 1000 instances}
+\end{figure}
+
+
+
+
+\section{Best Possible Heuristic}
+
+\subsection{Principe de l'algorithme}
+
+\subsection{Implémentation de l'approximation}
+
+\subsection{Analyse de l'approximation } 
+
+Dans cette sous-section, nous allons analyser les performances de cette approximation en moyenne et dans le pire des cas. 
+
+
+
+\begin{figure}[H]
+        \noindent
+        \makebox[\textwidth]{\includegraphics[scale=0.75]{images/histAPPHEU.png}}
+		\caption{Répartition des score d'approximation pour la 2-approximation "Best Heuristic" sur 1000 instances}
+\end{figure}
+
+
+Grâce à l'histogramme présenté en figure 4, on peut voir que dans plus de 60\% des cas, l'algorithme retourne au maximum 1.25 fois la solution optimale. C'est nettement moins que pour l'algorithme précédent, le ratio d'approximation semble légèrement plus étalé entre 1 et 2. 
+
+Dans le diagramme en bâton présenté en figure 5, on observe qu'en moyenne, le ratio de l'algorithme "Best Heuristic" est 1.21 fois pire que l'optimal. C'est très nettement moins bon que l'algorithme précédent. Ici encore, la courbe rouge permet de confirmer en pratique que l'on a bien une 2-approximation. On a bien max\_APP qui tend vers 2.
+
+
+
+
+
+
+
+\begin{figure}[H]
+        \noindent
+        \makebox[\textwidth]{\includegraphics[scale=0.4]{images/APPHEU_stats.png}}
+		\caption{Comparaison entre la solution optimale, le ratio en moyenne et le ratio dans le pire des cas sur 1000 instances}
+\end{figure}
+
+
+
+
+
+
+
+\section{Conclusion}
+
+Avantage d'avoir plusieurs approches possibles. 
+
+Qui prendre dans quel contexte ? 
+
+
+
+\section{References}
+
+\begin{itemize}
+    
+     \item \href{http://signal.ece.utexas.edu/~vishal/kcenters.pdf}{Best possible Heuristic}.
+
+\end{itemize}
+
+
+
+
+
+
+
+
+\end{document}

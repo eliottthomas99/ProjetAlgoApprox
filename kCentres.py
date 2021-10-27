@@ -209,12 +209,12 @@ def kCenterBestHeuristic(P,k):
 # TESTS
 
 # TESTS SUR DE NOMBREUSES INSTANCES
-"""
+
 k =4
 ratiosAPP = [] # listes des ratios d'aproximation obtenus par la 2-approximation du cours
 ratiosAPPHEU = [] # listes des ratios d'aproximation obtenus par la 2-approximation "Best Heuristic"
 t1 = time.perf_counter() # Pour mesurer le temps passé à effectueer les tests, en partiulier pour jauger du nombre de points par instance
-for _ in range(100): # on test sur un maximum d'instances possibles
+for _ in range(1000): # on test sur un maximum d'instances possibles
     
     centers = [(randint(1,100), randint(1,100)) for _ in range(k)] # les centres changent à chaque fois
     cluster_std = [randint(1,20) for _ in range(k)] # l'"éparpillement" de chaque cluster change à chaque fois
@@ -251,11 +251,46 @@ print(f"max ratioAPPHEU {max(ratiosAPPHEU)}")
 print(f"avg ratioAPPHEU {mean(ratiosAPPHEU)}")
 t2=time.perf_counter()
 print(f"temps écoulé :{t2-t1} secondes")
+
+#Stats sur APP
+plt.hist(ratiosAPP, bins=[1,1.25,1.5,1.75,2])
+plt.show()
+
+names = ['OPT', 'avg_APP', 'max_APP'] # nom des barres
+values = [1,mean(ratiosAPP) , max(ratiosAPP)]
+
+ind = np.arange(len(values))
+
+fig, ax = plt.subplots()
+ax.barh(ind, values,color=["blue","green","red"])
+ax.set_yticks(ind)
+ax.set_yticklabels(names)
+
+# new helper method to auto-label bars
+ax.bar_label(ax.containers[0])
+plt.show()
+
+#Stats sur APPHEU
+
+plt.hist(ratiosAPPHEU, bins=[1,1.25,1.5,1.75,2])
+plt.show()
+
+names = ['OPT', 'avg_APPHEU', 'max_APPHEU'] # nom des barres
+values = [1,mean(ratiosAPPHEU) , max(ratiosAPPHEU)]
+
+ind = np.arange(len(values))
+
+fig, ax = plt.subplots()
+ax.barh(ind, values,color=["blue","green","red"])
+ax.set_yticks(ind)
+ax.set_yticklabels(names)
+
+# new helper method to auto-label bars
+ax.bar_label(ax.containers[0])
+plt.show()
+
+
 """
-
-
-
-
 # AFFICHAGE 
 
 k = 4
@@ -342,5 +377,5 @@ plt.title('K-centres implementation', fontsize=8)
 
 
 plt.show()
-
+"""
 
