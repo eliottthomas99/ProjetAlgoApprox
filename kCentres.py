@@ -252,6 +252,9 @@ print(f"avg ratioAPPHEU {mean(ratiosAPPHEU)}")
 t2=time.perf_counter()
 print(f"temps écoulé :{t2-t1} secondes")
 
+
+
+"""
 #Stats sur APP
 plt.hist(ratiosAPP, bins=[1,1.25,1.5,1.75,2])
 plt.show()
@@ -266,7 +269,6 @@ ax.barh(ind, values,color=["blue","green","red"])
 ax.set_yticks(ind)
 ax.set_yticklabels(names)
 
-# new helper method to auto-label bars
 ax.bar_label(ax.containers[0])
 plt.show()
 
@@ -288,16 +290,16 @@ ax.set_yticklabels(names)
 # new helper method to auto-label bars
 ax.bar_label(ax.containers[0])
 plt.show()
-
+"""
 
 """
-# AFFICHAGE 
+# AFFICHAGE d'une instance
 
 k = 4
 centers = [(10, 80), (20, 20),(80, 20), (80, 60)] # les coordonnées des centres des blobs
 cluster_std = [8, 10,5,7] # les écarts type de chaque blob (plus d'écart = plus d'eclatement du blob)
 
-P, y = make_blobs(n_samples=10, cluster_std=cluster_std, centers=centers, n_features=k,random_state=42)   
+P, y = make_blobs(n_samples=10, cluster_std=cluster_std, centers=centers, n_features=k,random_state=3)   
 colors=["red", "blue", "green", "purple"] # pour pouvoir différencier les blobs
 
 P=P.tolist() # pour transformer l'array en list. 
@@ -354,18 +356,18 @@ for centre in range(len(centres)): # on affiche les centres trouvés par APP et 
 #APPHEU
 XsAPPHEU=[pointAPPHEU[0],(dicoAPPHEU[pointAPPHEU])[0][0]]
 YsAPPHEU=[pointAPPHEU[1],(dicoAPPHEU[pointAPPHEU])[0][1]]
-plt.plot(XsAPPHEU,YsAPPHEU,"g--") # La distance max trouvée par APPHEU
+plt.plot(XsAPPHEU,YsAPPHEU,"g--", label="Best Heuristic") # La distance max trouvée par APPHEU
 
 #APP
 XsAPP=[pointAPP[0],(dicoAPP[pointAPP])[0][0]]
 YsAPP=[pointAPP[1],(dicoAPP[pointAPP])[0][1]]
-plt.plot(XsAPP,YsAPP,"r:") # La distance max trouvée par APP
+plt.plot(XsAPP,YsAPP,"r:", label="Approx Cours") # La distance max trouvée par APP
 
 #OPT
 Xs=[point_far_brut[0],(dict_brut[point_far_brut])[0][0]]
 Ys=[point_far_brut[1],(dict_brut[point_far_brut])[0][1]]
-plt.plot(Xs,Ys) # la distance max optimale
-
+plt.plot(Xs,Ys, label="Optimal") # la distance max optimale
+plt.legend()
 
 
 
